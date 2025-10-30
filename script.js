@@ -41,6 +41,22 @@ function multiply() {
     currentValue = '';
 }
 
+// Операция 4: Деление
+function divide() {
+    if (currentValue === '') return;
+    if (previousValue !== '') calculate();
+    operation = 'divide';
+    previousValue = currentValue;
+    currentValue = '';
+}
+function modulo() {
+    if (currentValue === '') return;
+    if (previousValue !== '') calculate();
+    operation = 'modulo';
+    previousValue = currentValue;
+    currentValue = '';
+}
+
 function calculate() {
     let result;
     const prev = parseFloat(previousValue);
@@ -57,6 +73,16 @@ function calculate() {
             break;
         case 'multiply':
             result = prev * current;
+            break;
+        case 'divide':
+            if (current === 0) {
+                alert('Деление на ноль невозможно!');
+                return;
+            }
+            result = prev / current;
+            break;
+        case 'modulo':
+            result = prev % current;
             break;
         default:
             return;
