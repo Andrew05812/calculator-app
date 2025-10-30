@@ -1,6 +1,7 @@
 let currentValue = '';
 let previousValue = '';
 let operation = null;
+let memory = 0;
 
 function appendToDisplay(value) {
     currentValue += value;
@@ -121,4 +122,50 @@ function power() {
     operation = 'power'; 
     previousValue = currentValue; 
     currentValue = ''; 
+} 
+// Операция 9: Квадратный корень 
+function calculateSqrt() { 
+    if (currentValue === '') return; 
+    const value = parseFloat(currentValue); 
+    if (value < 0) { 
+        alert('Невозможно извлечь корень из отрицательного числа!'); 
+        return; 
+    } 
+    currentValue = Math.sqrt(value).toString(); 
+    document.getElementById('display').value = currentValue; 
+} 
+ 
+// Операция 10: Округление вниз 
+function floorValue() { 
+    if (currentValue === '') return; 
+    const value = parseFloat(currentValue); 
+    currentValue = Math.floor(value).toString(); 
+    document.getElementById('display').value = currentValue; 
+} 
+ 
+// Операция 11: Округление вверх 
+function ceilValue() { 
+    if (currentValue === '') return; 
+    const value = parseFloat(currentValue); 
+    currentValue = Math.ceil(value).toString(); 
+    document.getElementById('display').value = currentValue; 
+} 
+ 
+// Операция 12: Работа с памятью 
+function memoryAdd() { 
+    if (currentValue === '') return; 
+    memory += parseFloat(currentValue); 
+
+
+    console.log('В память добавлено:', memory); 
+} 
+ 
+function memoryClear() { 
+    memory = 0; 
+    console.log('Память очищена'); 
+} 
+ 
+function memoryRecall() { 
+    currentValue = memory.toString(); 
+    document.getElementById('display').value = currentValue; 
 } 

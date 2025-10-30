@@ -43,3 +43,10 @@ button {
 button:hover {
     background: #d0d0d0;
 }
+button[onclick*="memory"] { 
+    background: #c8e6c9; 
+} 
+ 
+button[onclick*="memory"]:hover { 
+    background: #a5d6a7; 
+}
