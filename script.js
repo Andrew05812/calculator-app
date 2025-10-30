@@ -84,6 +84,9 @@ function calculate() {
         case 'modulo':
             result = prev % current;
             break;
+        case 'power': 
+            result = Math.pow(prev, current); 
+            break; 
         default:
             return;
     }
@@ -93,3 +96,29 @@ function calculate() {
     previousValue = '';
     document.getElementById('display').value = currentValue;
 }
+// Операция 6: Sin 
+function calculateSin() { 
+    if (currentValue === '') return; 
+    const value = parseFloat(currentValue); 
+    // Переводим градусы в радианы 
+    const radians = value * (Math.PI / 180); 
+    currentValue = Math.sin(radians).toString(); 
+    document.getElementById('display').value = currentValue; 
+} 
+// Операция 7: Cos 
+function calculateCos() { 
+    if (currentValue === '') return; 
+    const value = parseFloat(currentValue); 
+    // Переводим градусы в радианы 
+    const radians = value * (Math.PI / 180); 
+    currentValue = Math.cos(radians).toString(); 
+    document.getElementById('display').value = currentValue; 
+} 
+// Операция 8: Возведение в степень 
+function power() { 
+    if (currentValue === '') return; 
+    if (previousValue !== '') calculate(); 
+    operation = 'power'; 
+    previousValue = currentValue; 
+    currentValue = ''; 
+} 
