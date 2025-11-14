@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+  <Product
+      Id="*"
+      Name="Calculator App"
+      Language="1033"
+      Version="1.0.0"
+      Manufacturer="ZhekaSoft"
+      UpgradeCode="A1B2C3D4-E5F6-47A8-9BCD-123456789000">
+
+    <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser"/>
+
+    <MediaTemplate/>
+
+    <Icon Id="CalcIcon" SourceFile="Calc.ico" />
+
+    <!-- Структура директорий -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="LocalAppDataFolder">
+        <Directory Id="INSTALLFOLDER" Name="CalculatorApp"/>
+      </Directory>
+
+      <Directory Id="DesktopFolder"/>
+    </Directory>
+
+    <!-- Файлы приложения: теперь каждый в своём компоненте -->
+    <DirectoryRef Id="INSTALLFOLDER">
+
+      <Component Id="IndexHtmlComponent" Guid="*">
+        <File Id="index_html" Source="../index.html" KeyPath="yes"/>
+      </Component>
+
+      <Component Id="ScriptJsComponent" Guid="*">
+        <File Id="script_js" Source="../script.js" KeyPath="yes"/>
+      </Component>
+
+      <Component Id="StylesCssComponent" Guid="*">
+        <File Id="style_css" Source="../style.css" KeyPath="yes"/>
+      </Component>
+
+      <!-- Компонент записи Installed -->
+      <Component Id="RegistryComponent" Guid="*">
+        <RegistryValue
+          Root="HKCU"
+          Key="Software\\ZhekaSoft\\CalculatorApp"
+          Name="Installed"
+          Type="integer"
+          Value="1"
+          KeyPath="yes"/>
+      </Component>
+
+    </DirectoryRef>
+
+    <!-- Ярлык на рабочем столе -->
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="DesktopShortcut" Guid="*">
+        <Shortcut
+          Id="CalcShortcut"
+          Name="Calculator App"
+          Target="[INSTALLFOLDER]index.html"
+          Icon="CalcIcon"/>
+        <RemoveFolder Id="RemoveDesktopShortcut" On="uninstall"/>
+        <RegistryValue
+          Root="HKCU"
+          Key="Software\\ZhekaSoft\\CalculatorApp\\Shortcut"
+          Name="Exists"
+          Type="integer"
+          Value="1"
+          KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="MainFeature" Level="1">
+      <ComponentRef Id="IndexHtmlComponent"/>
+      <ComponentRef Id="ScriptJsComponent"/>
+      <ComponentRef Id="StylesCssComponent"/>
+      <ComponentRef Id="RegistryComponent"/>
+      <ComponentRef Id="DesktopShortcut"/>
+    </Feature>
+
+  </Product>
+</Wix>
