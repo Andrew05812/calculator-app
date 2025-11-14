@@ -168,4 +168,31 @@ function memoryClear() {
 function memoryRecall() { 
     currentValue = memory.toString(); 
     document.getElementById('display').value = currentValue; 
-} 
+}
+if (typeof module !== 'undefined') { 
+    module.exports = { 
+        appendToDisplay, 
+        clearDisplay, 
+        add, 
+        subtract, 
+        multiply, 
+        divide, 
+        modulo, 
+        calculate, 
+        calculateSin, 
+        calculateCos, 
+        power, 
+        calculateSqrt, 
+        floorValue, 
+        ceilValue, 
+        memoryAdd, 
+        memoryClear, 
+        memoryRecall, 
+        getState: () => ({ 
+            currentValue, 
+            previousValue, 
+            operation, 
+            memory 
+        }) 
+    }; 
+}
