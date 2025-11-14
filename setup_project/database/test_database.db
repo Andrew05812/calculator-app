@@ -1,0 +1,13 @@
+-- Advertisement Test Database
+-- Version 1.0
+
+CREATE TABLE advertisements (
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO advertisements (title, content) VALUES 
+('Test Ad 1', 'This is a test advertisement'),
+('Test Ad 2', 'Another test advertisement');
