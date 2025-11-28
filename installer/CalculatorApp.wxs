@@ -1,82 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Product Id="*" Name="Calculator App" Language="1033"
+           Version="1.0.0.0" Manufacturer="YourName"
+           UpgradeCode="A6B2F1D0-7C4E-4B9A-9F01-123456789ABC">
 
-  <Product
-      Id="*"
-      Name="Calculator App"
-      Language="1033"
-      Version="1.0.0"
-      Manufacturer="ZhekaSoft"
-      UpgradeCode="A1B2C3D4-E5F6-47A8-9BCD-123456789000">
+    <!-- per-machine installer -->
+    <Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" />
 
-    <Package InstallerVersion="500" Compressed="yes" InstallScope="perUser"/>
+    <!-- UI + InstallDir property -->
+    <UIRef Id="WixUI_Mondo"/>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
 
-    <MediaTemplate/>
+    <!-- Media -->
+    <Media Id="1" Cabinet="cab1.cab" EmbedCab="yes"/>
 
-    <Icon Id="CalcIcon" SourceFile="Calc.ico" />
+    <!-- Icon for shortcuts and ARP (Calc.ico must be in installer/) -->
+    <Icon Id="AppIcon" SourceFile="Calc.ico"/>
+    <Property Id="ARPPRODUCTICON" Value="AppIcon"/>
 
-    <!-- Структура директорий -->
+    <!-- Directory tree -->
     <Directory Id="TARGETDIR" Name="SourceDir">
-      <Directory Id="LocalAppDataFolder">
+      <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="CalculatorApp"/>
+      </Directory>
+
+      <!-- Program menu and desktop are logical Windows Installer folders -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ProgramMenuDir" Name="Calculator App"/>
       </Directory>
 
       <Directory Id="DesktopFolder"/>
     </Directory>
 
-    <!-- Файлы приложения: теперь каждый в своём компоненте -->
+    <!-- Main application files -->
     <DirectoryRef Id="INSTALLFOLDER">
-
-      <Component Id="IndexHtmlComponent" Guid="*">
-        <File Id="index_html" Source="../index.html" KeyPath="yes"/>
+      <Component Id="AppFilesComponent" Guid="E1111111-1111-1111-1111-111111111111">
+        <File Id="IndexHtml" Source="../index.html" KeyPath="yes" />
+        <File Id="ScriptJs"  Source="../script.js" />
+        <File Id="StyleCss"  Source="../style.css" />
       </Component>
-
-      <Component Id="ScriptJsComponent" Guid="*">
-        <File Id="script_js" Source="../script.js" KeyPath="yes"/>
-      </Component>
-
-      <Component Id="StylesCssComponent" Guid="*">
-        <File Id="style_css" Source="../style.css" KeyPath="yes"/>
-      </Component>
-
-      <!-- Компонент записи Installed -->
-      <Component Id="RegistryComponent" Guid="*">
-        <RegistryValue
-          Root="HKCU"
-          Key="Software\\ZhekaSoft\\CalculatorApp"
-          Name="Installed"
-          Type="integer"
-          Value="1"
-          KeyPath="yes"/>
-      </Component>
-
     </DirectoryRef>
 
-    <!-- Ярлык на рабочем столе -->
+    <!-- Start Menu shortcut component (per-user KeyPath in HKCU) -->
+    <DirectoryRef Id="ProgramMenuDir">
+      <Component Id="StartMenuShortcutComponent" Guid="E2222222-2222-2222-2222-222222222222">
+        <Shortcut Id="StartMenuShortcut"
+                  Directory="ProgramMenuDir"
+                  Name="Calculator App"
+                  Description="Open Calculator App"
+                  Target="[INSTALLFOLDER]index.html"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <!-- Use HKCU registry key as KeyPath because shortcut is in user scope -->
+        <RegistryValue Root="HKCU"
+                       Key="Software\CalculatorApp\Shortcuts"
+                       Name="StartMenu"
+                       Type="string"
+                       Value="1"
+                       KeyPath="yes"/>
+        <RemoveFolder Id="RemoveProgramMenuDir" Directory="ProgramMenuDir" On="uninstall"/>
+      </Component>
+    </DirectoryRef>
+
+    <!-- Desktop shortcut component (per-user KeyPath in HKCU) -->
     <DirectoryRef Id="DesktopFolder">
-      <Component Id="DesktopShortcut" Guid="*">
-        <Shortcut
-          Id="CalcShortcut"
-          Name="Calculator App"
-          Target="[INSTALLFOLDER]index.html"
-          Icon="CalcIcon"/>
-        <RemoveFolder Id="RemoveDesktopShortcut" On="uninstall"/>
-        <RegistryValue
-          Root="HKCU"
-          Key="Software\\ZhekaSoft\\CalculatorApp\\Shortcut"
-          Name="Exists"
-          Type="integer"
-          Value="1"
-          KeyPath="yes"/>
+      <Component Id="DesktopShortcutComponent" Guid="E3333333-3333-3333-3333-333333333333">
+        <Shortcut Id="DesktopShortcut"
+                  Directory="DesktopFolder"
+                  Name="Calculator App"
+                  Description="Open Calculator App"
+                  Target="[INSTALLFOLDER]index.html"
+                  WorkingDirectory="INSTALLFOLDER"
+                  Icon="AppIcon" />
+        <RegistryValue Root="HKCU"
+                       Key="Software\CalculatorApp\Shortcuts"
+                       Name="Desktop"
+                       Type="string"
+                       Value="1"
+                       KeyPath="yes"/>
       </Component>
     </DirectoryRef>
 
-    <Feature Id="MainFeature" Level="1">
-      <ComponentRef Id="IndexHtmlComponent"/>
-      <ComponentRef Id="ScriptJsComponent"/>
-      <ComponentRef Id="StylesCssComponent"/>
-      <ComponentRef Id="RegistryComponent"/>
-      <ComponentRef Id="DesktopShortcut"/>
+    <!-- Features -->
+    <Feature Id="MainFeature" Title="Calculator App" Level="1">
+      <ComponentRef Id="AppFilesComponent" />
+    </Feature>
+
+    <Feature Id="StartMenuFeature" Title="Start Menu shortcut" Level="1" Absent="allow">
+      <ComponentRef Id="StartMenuShortcutComponent" />
+    </Feature>
+
+    <Feature Id="DesktopFeature" Title="Desktop shortcut" Level="1" Absent="allow">
+      <ComponentRef Id="DesktopShortcutComponent" />
     </Feature>
 
   </Product>

@@ -1,21 +1,18 @@
 #!/bin/bash
+set -e
 
-WIX="/c/Program Files (x86)/WiX Toolset v3.14/bin"
+# Путь к WiX (проверь и при необходимости поправь)
+# Пример для 64-bit Program Files (x86)
+WIX_BIN="/c/Program Files (x86)/WiX Toolset v3.14/bin"
+
+# Очистка старых артефактов
+rm -f CalculatorApp.wixobj CalculatorApp.wixpdb cab1.cab CalculatorApp-*.msi
 
 echo "Compiling WXS..."
-"$WIX/candle.exe" CalculatorApp.wxs
+"$WIX_BIN/candle.exe" CalculatorApp.wxs -o CalculatorApp.wixobj
 
-if [ $? -ne 0 ]; then
-  echo "Error during candle"
-  exit 1
-fi
+echo "Linking MSI (with WixUIExtension)..."
+"$WIX_BIN/light.exe" CalculatorApp.wixobj -ext WixUIExtension -o CalculatorApp.msi
 
-echo "Linking MSI..."
-"$WIX/light.exe" CalculatorApp.wixobj -o CalculatorApp.msi
-
-if [ $? -ne 0 ]; then
-  echo "Error during light"
-  exit 1
-fi
-
-echo "Build complete: CalculatorApp.msi"
+echo "Build finished. Output: CalculatorApp.msi"
+ls -la CalculatorApp.msi || true
