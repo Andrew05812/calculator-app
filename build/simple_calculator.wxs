@@ -15,11 +15,18 @@
 
     <DirectoryRef Id="INSTALLFOLDER">
       <Component Id="AppFilesComponent" Guid="E1111111-1111-1111-1111-111111111111">
-        <File Id="IndexHtml" Source="build/index.html"/>
-        <File Id="ScriptJs"  Source="build/script.js"/>
-        <File Id="StyleCss"  Source="build/style.css"/>
-        <!-- KeyPath для компонента через HKCU -->
-        <RegistryValue Root="HKCU" Key="Software\CalculatorApp" Name="Installed" Type="integer" Value="1" KeyPath="yes"/>
+        <RegistryValue
+            Root="HKCU"
+            Key="Software\CalculatorApp"
+            Name="Installed"
+            Type="integer"
+            Value="1"
+            KeyPath="yes" />
+
+        <File Id="IndexHtml" Source="$(var.BuildDir)\index.html" />
+        <File Id="ScriptJs"  Source="$(var.BuildDir)\script.js"/>
+        <File Id="StyleCss"  Source="$(var.BuildDir)\style.css"/>
+
         <RemoveFolder Id="RemoveINSTALLFOLDER" Directory="INSTALLFOLDER" On="uninstall"/>
       </Component>
     </DirectoryRef>
